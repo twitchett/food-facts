@@ -1,1 +1,13 @@
 @import "./bare.css";
+
+.panel {
+  padding: 10px 10px 20px 10px;
+}
+
+input.searchInput {
+  width: 80%;
+}
+
+.resultsList li {
+  cursor: pointer;
+}
