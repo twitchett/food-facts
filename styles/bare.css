@@ -74,7 +74,7 @@ img {
 /*  anchor link
 ----------------------------------------------------------------------*/
 
-a:not([class]),
+a,
 a[xx] {
   color: inherit;
   text-decoration: none;
@@ -82,7 +82,7 @@ a[xx] {
   z-index: 1;
 }
 
-p a:not([class]):not([btn]):before,
+p a:not([btn]):before,
 p a[xx]:not([btn]):before {
   content: "";
   display: inline-block;
@@ -96,7 +96,7 @@ p a[xx]:not([btn]):before {
   z-index: -1;
 }
 
-p a:not([class]):not([btn]):hover:before,
+p a:not([btn]):hover:before,
 p a[xx]:not([btn]):hover:before {
   transform: none;
 }
@@ -105,7 +105,7 @@ p a[xx]:not([btn]):hover:before {
 /*  blockquote
 ----------------------------------------------------------------------*/
 
-blockquote:not([class]),
+blockquote,
 blockquote[xx] {
   margin: 2rem 0;
   padding: 1rem 2rem;
@@ -116,7 +116,7 @@ blockquote[xx] {
 /*  buttons
 ----------------------------------------------------------------------*/
 
-button:not([class]),
+button,
 button[xx],
 input[type=submit],
 [btn] {
@@ -138,7 +138,7 @@ input[type=submit],
   -webkit-appearance: none;
 }
 
-button:not([class]):before,
+button:before,
 button[xx]:before,
 input[type=submit]:before,
 [btn]:before {
@@ -154,7 +154,7 @@ input[type=submit]:before,
   background: #679;
 }
 
-button:not([class]):not(:disabled):hover,
+button:not(:disabled):hover,
 button[xx]:not(:disabled):hover,
 input[type=submit]:not(:disabled):hover,
 [btn]:not(:disabled):hover {
@@ -162,7 +162,7 @@ input[type=submit]:not(:disabled):hover,
   background: hsl(200, 10%, 96%);
 }
 
-button:not([class]):not(:disabled):hover:active,
+button:not(:disabled):hover:active,
 button[xx]:not(:disabled):hover:active,
 input[type=submit]:not(:disabled):hover:active,
 [btn]:not(:disabled):hover:active {
@@ -170,7 +170,7 @@ input[type=submit]:not(:disabled):hover:active,
   transition: none;
 }
 
-button:not([class])[primary],
+button[primary],
 button[xx][primary],
 input[type=submit][primary],
 [btn][primary] {
@@ -180,14 +180,14 @@ input[type=submit][primary],
   font-weight: 700;
 }
 
-button:not([class])[primary]:not(:disabled):hover,
+button[primary]:not(:disabled):hover,
 button[xx][primary]:not(:disabled):hover,
 input[type=submit][primary]:not(:disabled):hover,
 [btn][primary]:not(:disabled):hover {
   background: #5a6987;
 }
 
-button:not([class])[round],
+button[round],
 button[xx][round],
 input[type=submit][round],
 [btn][round] {
@@ -195,7 +195,7 @@ input[type=submit][round],
 }
 
 @media (max-width: 50rem) {
-  button:not([class])[m-full],
+  button[m-full],
   button[xx][m-full],
   input[type=submit][m-full],
   [btn][m-full] {
@@ -203,11 +203,11 @@ input[type=submit][round],
   }
 }
 
-button:not([class]):disabled,
+button:disabled,
 button[xx]:disabled,
 input[type=submit]:disabled,
 [btn]:disabled,
-button:not([class]).disabled,
+button.disabled,
 button[xx].disabled,
 input[type=submit].disabled,
 [btn].disabled {
@@ -230,7 +230,7 @@ card {
   margin-bottom: 2rem;
 }
 
-card hr:not([class]),
+card hr,
 card hr[xx] {
   margin: 1rem 0;
 }
@@ -239,7 +239,7 @@ card:last-child {
   margin-bottom: 0;
 }
 
-card>img:not([class]),
+card>img,
 card>img[xx] {
   width: calc(100% + 4rem);
   max-width: none;
@@ -247,14 +247,14 @@ card>img[xx] {
   display: block;
 }
 
-card>img:not([class]):first-child,
+card>img:first-child,
 card>img[xx]:first-child {
   margin: -2rem 0 2rem -2rem;
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
 }
 
-card>img:not([class]):last-child,
+card>img:last-child,
 card>img[xx]:last-child {
   margin: 0 0 -2rem -2rem;
   border-bottom-left-radius: 2px;
@@ -265,7 +265,7 @@ card>img[xx]:last-child {
 /*  code
 ----------------------------------------------------------------------*/
 
-code:not([class]),
+code,
 code[xx] {
   display: inline-block;
   background: hsl(200, 10%, 96%);
@@ -280,7 +280,7 @@ code[xx] {
   font-weight: 300;
 }
 
-pre:not([class]) code,
+pre code,
 pre[xx] code {
   padding: 2rem;
   border: none;
@@ -405,7 +405,7 @@ grid grid:not(:first-child) {
 /*  inputs
 ----------------------------------------------------------------------*/
 
-label:not([class]),
+label,
 label[xx] {
   display: inline-block;
   width: 100%;
@@ -415,12 +415,12 @@ label[xx] {
   margin-top: 1rem;
 }
 
-label:not([class]):first-child,
+label:first-child,
 label[xx]:first-child {
   margin-top: 0;
 }
 
-input:not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit]):not([class]),
+input:not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit]),
 input:not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit])[xx] {
   display: inline-block;
   background: transparent;
@@ -434,16 +434,16 @@ input:not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit
   border-radius: 0;
 }
 
-input:not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit]):not([class]):focus,
+input:not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit]):focus,
 input:not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit])[xx]:focus,
-input:not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit]):not([class]):hover,
+input:not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit]):hover,
 input:not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit])[xx]:hover {
   color: #679;
   border-color: #679;
   outline: 0;
 }
 
-textarea:not([class]),
+textarea,
 textarea[xx] {
   display: inline-block;
   background: transparent;
@@ -461,16 +461,16 @@ textarea[xx] {
   border-bottom-right-radius: 0.5rem;
 }
 
-textarea:not([class]):focus,
+textarea:focus,
 textarea[xx]:focus,
-textarea:not([class]):hover,
+textarea:hover,
 textarea[xx]:hover {
   color: #679;
   border-color: #679;
   outline: 0;
 }
 
-select:not([class]),
+select,
 select[xx] {
   padding: 0.5rem 3rem 0.5rem 1rem;
   display: block;
@@ -488,16 +488,16 @@ select[xx] {
   cursor: pointer;
 }
 
-select:not([class]):focus,
+select:focus,
 select[xx]:focus,
-select:not([class]):hover,
+select:hover,
 select[xx]:hover {
   border-color: #679;
   outline: 0;
 }
 
-input[type=radio]:not([class]),
-input[type=checkbox]:not([class]),
+input[type=radio],
+input[type=checkbox],
 input[type=radio][xx],
 input[type=checkbox][xx] {
   z-index: 2;
@@ -509,16 +509,16 @@ input[type=checkbox][xx] {
   cursor: pointer;
 }
 
-input[type=radio]:not([class])+label,
-input[type=checkbox]:not([class])+label,
+input[type=radio]+label,
+input[type=checkbox]+label,
 input[type=radio][xx]+label,
 input[type=checkbox][xx]+label {
   width: auto;
   text-transform: none;
 }
 
-input[type=radio]:not([class])+label:before,
-input[type=checkbox]:not([class])+label:before,
+input[type=radio]+label:before,
+input[type=checkbox]+label:before,
 input[type=radio][xx]+label:before,
 input[type=checkbox][xx]+label:before {
   content: "";
@@ -531,8 +531,8 @@ input[type=checkbox][xx]+label:before {
   margin-right: 1rem;
 }
 
-input[type=radio]:not([class])+label:after,
-input[type=checkbox]:not([class])+label:after,
+input[type=radio]+label:after,
+input[type=checkbox]+label:after,
 input[type=radio][xx]+label:after,
 input[type=checkbox][xx]+label:after {
   content: "";
@@ -547,24 +547,24 @@ input[type=checkbox][xx]+label:after {
   transform: scale(0);
 }
 
-input[type=radio]:not([class])+label,
+input[type=radio]+label,
 input[type=radio][xx]+label {
   font-size: 1.4rem;
   font-weight: 200;
 }
 
-input[type=radio]:not([class])+label:before,
+input[type=radio]+label:before,
 input[type=radio][xx]+label:before {
   border-radius: 100%;
 }
 
-input[type=radio]:not([class]):checked+label:before,
+input[type=radio]:checked+label:before,
 input[type=radio][xx]:checked+label:before {
   background: #679;
   border-color: #679;
 }
 
-input[type=radio]:not([class]):checked+label:after,
+input[type=radio]:checked+label:after,
 input[type=radio][xx]:checked+label:after {
   opacity: 1;
   visibility: visible;
@@ -575,31 +575,31 @@ input[type=radio][xx]:checked+label:after {
   top: 0.5rem;
 }
 
-input[type=checkbox]:not([class])+label,
+input[type=checkbox]+label,
 input[type=checkbox][xx]+label {
   font-size: 1.4rem;
   font-weight: 200;
 }
 
-input[type=checkbox]:not([class])+label:before,
+input[type=checkbox]+label:before,
 input[type=checkbox][xx]+label:before {
   border-radius: 2px;
 }
 
-input[type=checkbox]:not([class])+label:after,
+input[type=checkbox]+label:after,
 input[type=checkbox][xx]+label:after {
   background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20fill%3D%22%23fff%22%20d%3D%22M9%2016.2L4.8%2012l-1.4%201.4L9%2019%2021%207l-1.4-1.4L9%2016.2z%22%2F%3E%3C%2Fsvg%3E") no-repeat center center;
   border-radius: 100%;
   background-size: 100%;
 }
 
-input[type=checkbox]:not([class]):checked+label:before,
+input[type=checkbox]:checked+label:before,
 input[type=checkbox][xx]:checked+label:before {
   background: #679;
   border-color: #679;
 }
 
-input[type=checkbox]:not([class]):checked+label:after,
+input[type=checkbox]:checked+label:after,
 input[type=checkbox][xx]:checked+label:after {
   opacity: 1;
   visibility: visible;
@@ -612,13 +612,13 @@ input[type=checkbox][xx]:checked+label:after {
 /*  layouts
 ----------------------------------------------------------------------*/
 
-img:not([class]),
+img,
 img[xx] {
   height: auto;
   max-width: 100%;
 }
 
-section:not([class]),
+section,
 section[xx] {
   margin: auto;
   padding: 4rem 2rem;
@@ -626,17 +626,17 @@ section[xx] {
   max-width: 90rem;
 }
 
-p:not([class]),
+p,
 p[xx] {
   margin: 0 0 2rem;
 }
 
-p:not([class]):last-child,
+p:last-child,
 p[xx]:last-child {
   margin: 0;
 }
 
-hr:not([class]),
+hr,
 hr[xx] {
   background: hsl(200, 10%, 90%);
   border: none;
@@ -649,41 +649,41 @@ hr[xx] {
 /*  lists
 ----------------------------------------------------------------------*/
 
-ul:not([class]),
-ol:not([class]),
+ul,
+ol,
 ul[xx],
 ol[xx] {
   padding-left: 2rem;
   margin: 0 0 2rem;
 }
 
-ul:not([class]) ul,
-ol:not([class]) ul,
+ul ul,
+ol ul,
 ul[xx] ul,
 ol[xx] ul,
-ul:not([class]) ol,
-ol:not([class]) ol,
+ul ol,
+ol ol,
 ul[xx] ol,
 ol[xx] ol {
   margin-bottom: 0;
 }
 
-ul:not([class]),
+ul,
 ul[xx] {
   list-style: disc;
 }
 
-ul:not([class]) ul,
+ul ul,
 ul[xx] ul {
   list-style: circle;
 }
 
-ol:not([class]),
+ol,
 ol[xx] {
   list-style: decimal;
 }
 
-ol:not([class]) ol,
+ol ol,
 ol[xx] ol {
   list-style: lower-alpha;
 }
@@ -692,7 +692,7 @@ ol[xx] ol {
 /*  navigation
 ----------------------------------------------------------------------*/
 
-nav:not([class]),
+nav,
 nav[xx] {
   background: #fff;
   color: hsl(200, 10%, 20%);
@@ -702,7 +702,7 @@ nav[xx] {
   min-height: 4.4rem;
 }
 
-nav:not([class])[fx],
+nav[fx],
 nav[xx][fx] {
   background: rgba(255, 255, 255, 0.95);
   position: fixed;
@@ -712,19 +712,19 @@ nav[xx][fx] {
   z-index: 11;
 }
 
-nav:not([class]) label,
+nav label,
 nav[xx] label {
   max-width: 90rem;
   margin: auto;
   display: block;
 }
 
-nav:not([class]) label>input,
+nav label>input,
 nav[xx] label>input {
   display: none;
 }
 
-nav:not([class]) ul,
+nav ul,
 nav[xx] ul {
   padding: 0 2rem;
   margin: 0;
@@ -732,16 +732,16 @@ nav[xx] ul {
   text-align: right;
 }
 
-nav:not([class]) ul li,
+nav ul li,
 nav[xx] ul li {
   display: inline-block;
   font-size: 1.6rem;
 }
 
 @media (min-width: 50.1rem) {
-  nav:not([class]) ul li:hover menu,
+  nav ul li:hover menu,
   nav[xx] ul li:hover menu,
-  nav:not([class]) ul menu:hover,
+  nav ul menu:hover,
   nav[xx] ul menu:hover {
     visibility: visible;
     opacity: 1;
@@ -750,7 +750,7 @@ nav[xx] ul li {
   }
 }
 
-nav:not([class]) ul a,
+nav ul a,
 nav[xx] ul a {
   text-decoration: none;
   text-transform: none;
@@ -762,7 +762,7 @@ nav[xx] ul a {
 }
 
 @media (min-width: 50.1rem) {
-  nav:not([class]) ul a:not(:only-child),
+  nav ul a:not(:only-child),
   nav[xx] ul a:not(:only-child) {
     background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2248%22%20height%3D%2248%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpath%20d%3D%22M14.83%2016.42L24%2025.59l9.17-9.17L36%2019.25l-12%2012-12-12z%22%2F%3E%3C%2Fsvg%3E");
     background-repeat: no-repeat;
@@ -772,13 +772,13 @@ nav[xx] ul a {
   }
 }
 
-nav:not([class]) ul a:hover,
+nav ul a:hover,
 nav[xx] ul a:hover {
   color: #679;
   border-color: #679;
 }
 
-nav:not([class]) menu,
+nav menu,
 nav[xx] menu {
   padding: 0;
   margin: 0;
@@ -790,7 +790,7 @@ nav[xx] menu {
 }
 
 @media (min-width: 50.1rem) {
-  nav:not([class]) menu,
+  nav menu,
   nav[xx] menu {
     visibility: hidden;
     opacity: 0;
@@ -803,24 +803,24 @@ nav[xx] menu {
   }
 }
 
-nav:not([class]) menu menuitem,
+nav menu menuitem,
 nav[xx] menu menuitem {
   display: block;
   border-left: 4px solid transparent;
 }
 
-nav:not([class]) menu menuitem:hover,
+nav menu menuitem:hover,
 nav[xx] menu menuitem:hover {
   border-color: #679;
   background-color: hsl(200, 10%, 96%);
 }
 
-nav:not([class]) menu menuitem:hover a,
+nav menu menuitem:hover a,
 nav[xx] menu menuitem:hover a {
   transform: translate3d(0.5rem, 0, 0);
 }
 
-nav:not([class]) menu menuitem a,
+nav menu menuitem a,
 nav[xx] menu menuitem a {
   text-transform: none;
   padding: 0.5rem 2rem 0.5rem 1.6rem;
@@ -828,9 +828,9 @@ nav[xx] menu menuitem a {
   font-size: 1.2rem;
 }
 
-nav:not([class]) header:before,
+nav header:before,
 nav[xx] header:before,
-nav:not([class]) header:after,
+nav header:after,
 nav[xx] header:after {
   content: "";
   position: absolute;
@@ -844,19 +844,19 @@ nav[xx] header:after {
   background-repeat: no-repeat;
 }
 
-nav:not([class]) header:before,
+nav header:before,
 nav[xx] header:before {
   background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2248%22%20height%3D%2248%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpath%20fill%3D%22%232e3538%22%20d%3D%22M6%2036h36v-4H6v4zm0-10h36v-4H6v4zm0-14v4h36v-4H6z%22%2F%3E%3C%2Fsvg%3E");
 }
 
-nav:not([class]) header:after,
+nav header:after,
 nav[xx] header:after {
   background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2248%22%20height%3D%2248%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpath%20d%3D%22M38%2012.83L35.17%2010%2024%2021.17%2012.83%2010%2010%2012.83%2021.17%2024%2010%2035.17%2012.83%2038%2024%2026.83%2035.17%2038%2038%2035.17%2026.83%2024z%22%2F%3E%3C%2Fsvg%3E");
   opacity: 0;
   transform: rotate(180deg);
 }
 
-nav:not([class]) header a,
+nav header a,
 nav[xx] header a {
   position: absolute;
   left: 2rem;
@@ -868,7 +868,7 @@ nav[xx] header a {
   text-decoration: none;
 }
 
-nav:not([class]) header a img,
+nav header a img,
 nav[xx] header a img {
   height: 2rem;
   vertical-align: middle;
@@ -880,7 +880,7 @@ nav[xx] header a img {
   body {
     padding-top: 4.4rem;
   }
-  nav:not([class]),
+  nav,
   nav[xx] {
     position: fixed;
     padding: 0;
@@ -888,7 +888,7 @@ nav[xx] header a img {
     left: 0;
     right: 0;
   }
-  nav:not([class]) header,
+  nav header,
   nav[xx] header {
     position: absolute;
     top: 0;
@@ -896,17 +896,17 @@ nav[xx] header a img {
     right: 0;
     bottom: 0;
   }
-  nav:not([class]) header:before,
+  nav header:before,
   nav[xx] header:before,
-  nav:not([class]) header:after,
+  nav header:after,
   nav[xx] header:after {
     display: block;
   }
-  nav:not([class]) label,
+  nav label,
   nav[xx] label {
     height: 4.4rem;
   }
-  nav:not([class]) label>ul,
+  nav label>ul,
   nav[xx] label>ul {
     position: fixed;
     top: 4.4rem;
@@ -921,35 +921,35 @@ nav[xx] header a img {
     overflow-x: visible;
     overflow-y: auto;
   }
-  nav:not([class]) label>ul li,
+  nav label>ul li,
   nav[xx] label>ul li {
     display: block;
     border-top: 1px solid hsl(200, 10%, 90%);
   }
-  nav:not([class]) label>ul a,
+  nav label>ul a,
   nav[xx] label>ul a {
     padding: 1rem 6rem 1rem 2rem;
     border: none;
   }
-  nav:not([class]) label input:checked~ul,
+  nav label input:checked~ul,
   nav[xx] label input:checked~ul {
     transform: none;
   }
-  nav:not([class]) label input:checked~header:before,
+  nav label input:checked~header:before,
   nav[xx] label input:checked~header:before {
     transform: rotate(-180deg);
     opacity: 0;
   }
-  nav:not([class]) label input:checked~header:after,
+  nav label input:checked~header:after,
   nav[xx] label input:checked~header:after {
     transform: none;
     opacity: 1;
   }
-  nav:not([class]) label menu menuitem,
+  nav label menu menuitem,
   nav[xx] label menu menuitem {
     border-color: hsl(200, 10%, 90%);
   }
-  nav:not([class]) label menu a,
+  nav label menu a,
   nav[xx] label menu a {
     padding-left: 4rem;
   }
@@ -959,7 +959,7 @@ nav[xx] header a img {
 /*  table
 ----------------------------------------------------------------------*/
 
-table:not([class]),
+table,
 table[xx] {
   width: 100%;
   border-collapse: collapse;
@@ -969,21 +969,21 @@ table[xx] {
   overflow: hidden;
 }
 
-table:not([class]) th,
+table th,
 table[xx] th,
-table:not([class]) td,
+table td,
 table[xx] td {
   border-bottom: 2px solid hsl(200, 10%, 90%);
   padding: 1rem;
 }
 
-table:not([class]) th,
+table th,
 table[xx] th {
   font-weight: 700;
   color: hsl(200, 10%, 30%);
 }
 
-table:not([class]) th:before,
+table th:before,
 table[xx] th:before {
   content: "";
   width: 100%;
@@ -998,18 +998,18 @@ table[xx] th:before {
   visibility: hidden;
 }
 
-table:not([class]) th:hover:before,
+table th:hover:before,
 table[xx] th:hover:before {
   opacity: 1;
   visibility: visible;
 }
 
-table:not([class]) td,
+table td,
 table[xx] td {
   border-bottom-width: 1px;
 }
 
-table:not([class]) tbody tr:hover,
+table tbody tr:hover,
 table[xx] tbody tr:hover {
   background: hsl(200, 10%, 96%);
 }
@@ -1105,35 +1105,35 @@ ul,
 /* typography
 ----------------------------------------------------------------------*/
 
-h1:not([class]),
+h1,
 h1[xx] {
   font-size: 4rem;
   line-height: 1.1;
   letter-spacing: -1px;
 }
 
-h2:not([class]),
+h2,
 h2[xx] {
   font-size: 3rem;
   line-height: 1.1;
   letter-spacing: -0.05rem;
 }
 
-h3:not([class]),
+h3,
 h3[xx] {
   font-size: 2.5rem;
   line-height: 1.3;
   letter-spacing: -0.05rem;
 }
 
-h4:not([class]),
+h4,
 h4[xx] {
   font-size: 2rem;
   line-height: 1.3;
   letter-spacing: -0.05rem;
 }
 
-h5:not([class]),
+h5,
 h5[xx] {
   font-size: 1.4rem;
   line-height: 1.5;
@@ -1142,7 +1142,7 @@ h5[xx] {
   font-weight: 700;
 }
 
-h6:not([class]),
+h6,
 h6[xx] {
   font-size: 1.4rem;
   line-height: 1.5;
