@@ -20,7 +20,7 @@
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "hyperapp": "^1.2.8",
-    "hyperapp-redux-devtools": "^1.1.6",
+    "hyperapp-redux-devtools": "^1.1.6"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

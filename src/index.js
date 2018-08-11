@@ -1,22 +1,6 @@
 import { h, app } from 'hyperapp'
 import devtools from 'hyperapp-redux-devtools'
-import axios from 'axios'
-
-const HOST = 'https://api.nal.usda.gov/ndb'
-const SEARCH = `${HOST}/search`
-const REPORT = `${HOST}/V2/reports`
-const API_KEY = 'fTS7p8sGvtY5i9HtukkiZQw2iAA49elj8yrXb3SG'
-
-const params = [
-  [ 'api_key', 'fTS7p8sGvtY5i9HtukkiZQw2iAA49elj8yrXb3SG' ],
-  [ 'sort', 'r' ],
-  [ 'ds', 'Standard Reference'],
-  [ 'format', 'json' ]
-]
-
-const requestOpts = {
-  mode: 'cors'
-}
+import { getSearchResults, getFoodReport } from './api'
 
 const state = {
   q: '',
@@ -33,15 +17,8 @@ const state = {
 const actions = {
   setInput: value => state => ({ q: value }),
   getFoodSuggetions: value => async (state, actions) => {
-    const { q } = state
     const { setSearchResults, setError } = actions
-    const paramString = params
-      .map(([key, value]) =>
-        `${key}=${value}`
-      )
-      .join('&')
-    const url = `${SEARCH}?${paramString}&q=${q}`
-    const response = await fetch(url, requestOpts)
+    const response = await getSearchResults(value)
     if (response.ok) {
       const body = await response.json()
       setSearchResults(body)
@@ -51,8 +28,7 @@ const actions = {
   },
   selectFood: value => async (state, actions) => {
     const { addFood, setError } = actions
-    const url = `${REPORT}?api_key=fTS7p8sGvtY5i9HtukkiZQw2iAA49elj8yrXb3SG&ndbno=${value}`
-    const response = await fetch(url, requestOpts)
+    const response = await getFoodReport(value)
     if (response.ok) {
       const body = await response.json()
       if (body && body.foods && body.foods.length) {
@@ -81,17 +57,12 @@ const view = (state, actions) => {
           <input class="searchInput"
             type="text"
             oninput={e => {
-              console.log('newvalue', e.target.value)
               actions.setInput(e.target.value)
             }}
             onkeyup={e => {
               if (e.key === 'Enter') {
                 getFoodSuggetions(q)
               }
-            }}
-            onupdate={(element, prevAttrs) => {
-              console.log('onupdate el', element)
-              console.log('onupdate prevAttrs', prevAttrs)
             }}
           />
           <button onclick={() => getFoodSuggetions(q)}>Search</button>
