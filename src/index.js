@@ -1,21 +1,22 @@
 import { h, app } from 'hyperapp'
 import devtools from 'hyperapp-redux-devtools'
 import { getSearchResults, getFoodReport } from './api'
+import { EventBus } from './EventBus'
+import { Charts } from './Charts'
+
+const c = new Charts()
 
 const state = {
-  q: '',
-  searchResults: {
-    list: {
-      item: []
-    }
-  },
+  search: '',
+  searchResults: null,
   selectedFoods: [],
   focusedFood: null,
   error: null
 }
 
 const actions = {
-  setInput: value => state => ({ q: value }),
+  reduce: fn => s => fn(s),
+  setInput: value => ({ search: value }),
   getFoodSuggetions: value => async (state, actions) => {
     const { setSearchResults, setError } = actions
     const response = await getSearchResults(value)
@@ -23,7 +24,8 @@ const actions = {
       const body = await response.json()
       setSearchResults(body)
     } else {
-      setError(response)
+      // setError(response)
+      window.alert(JSON.stringify(response))
     }
   },
   selectFood: value => async (state, actions) => {
@@ -35,19 +37,26 @@ const actions = {
         addFood(body.foods[0].food)
       }
     } else {
-      setError(response)
+      // setError(response)
+      window.alert(JSON.stringify(response))
     }
   },
-  setSearchResults: searchResults => state => ({ searchResults }),
-  addFood: value => state => ({ selectedFoods: [...state.selectedFoods, value] }),
-  setError: error => state => ({ error }),
-  down: value => state => ({ count: state.count - value }),
-  up: value => state => ({ count: state.count + value })
+  setSearchResults: searchResults => ({ searchResults }),
+  addFood: value => (state, actions) => {
+    const { selectedFoods } = actions.reduce(s => ({ selectedFoods: [...s.selectedFoods, value] }))
+    EventBus.emit('foods_updated', selectedFoods)
+  },
+  removeFood: value => (state, actions) => {
+    const newSelectedFoods = state.selectedFoods.filter(food => food !== value)
+    const { selectedFoods } = actions.reduce(s => ({ selectedFoods: newSelectedFoods }))
+    EventBus.emit('foods_updated', selectedFoods)
+  }
 }
 
 const view = (state, actions) => {
-  const { q, searchResults, selectedFoods } = state
-  const { getFoodSuggetions, selectFood } = actions
+  const { search, searchResults, selectedFoods } = state
+  const { getFoodSuggetions, selectFood, setInput, removeFood } = actions
+  EventBus.emit('foods_updated', selectedFoods)
 
   return (
     <grid>
@@ -57,33 +66,46 @@ const view = (state, actions) => {
           <input class="searchInput"
             type="text"
             oninput={e => {
-              actions.setInput(e.target.value)
+              setInput(e.target.value)
             }}
             onkeyup={e => {
               if (e.key === 'Enter') {
-                getFoodSuggetions(q)
+                getFoodSuggetions(search)
               }
             }}
           />
-          <button onclick={() => getFoodSuggetions(q)}>Search</button>
+          <button onclick={() => getFoodSuggetions(search)}>Search</button>
         </div>
         <div class='panel'>
           <h2>Results:</h2>
           <ul class="resultsList">
-          { searchResults.list.item.map(i => <li onclick={() => selectFood(i.ndbno)}>{i.name} [{i.group}]</li>) }
+          { searchResults && searchResults.list.item.map(i => 
+            <li onclick={() => {
+                selectFood(i.ndbno)
+              }}>{i.name} [{i.group}]
+            </li>
+          )}
           </ul>
         </div>
       </div>
       <div col="1/2">
         <div class='panel'>
           <h2>Selected:</h2>
-          <ul>
-            { selectedFoods.map(food => <li>{food.desc.name}</li>) }
+          <ul class="foodsList">
+            { selectedFoods.map(food => foodItem(food, removeFood)) }
           </ul>
+          <div id="macrosChart" />
         </div>
       </div>
-  </grid>
+    </grid>
   )
 }
+
+const foodItem = (food, removeFood) => (
+  <li>
+    <div class="foodItem">{food.desc.name}</div>
+    <button onclick={() => removeFood(food)}>X</button>
+  </li>
+)
 
 devtools(app)(state, actions, view, document.getElementById('app'))

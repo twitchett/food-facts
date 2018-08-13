@@ -11,3 +11,18 @@ input.searchInput {
 .resultsList li {
   cursor: pointer;
 }
+
+.foodsList li {
+  list-style-type: none;
+}
+
+.foodsList .foodItem {
+  height: 30px;
+  padding-right: 15px;
+  display: inline-block;
+  width: 70%;
+}
+
+#macrosChart {
+  width: 90%;
+}
