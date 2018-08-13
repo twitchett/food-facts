@@ -1,6 +1,6 @@
-import { mergeWith, pick } from 'lodash'
+
 import { EventBus } from './EventBus'
-import { AMINO_ACIDS, getAminoShorthand, getAminoPercentage, accumulate } from './utils/aminoAcidUtils'
+import { AMINO_ACIDS, getAminoShorthand, getAminoPercentage, accumulate, hasAminoAcids } from './utils/aminoAcidUtils'
 const google = window.google
 
 const stats = {
@@ -41,19 +41,18 @@ class Charts {
   }
 
   drawAminoAcids (foods) {
-    const options = {
-      title: "Amino Acids",
-      bar: { groupWidth: "95%" },
-      legend: { position: "none" },
-    }
-
     // extracts an array of amino acid nutrient objects from the food report
     const extractAminoAcids = food => food.nutrients.filter(nutrient => AMINO_ACIDS.includes(nutrient.name))
     
     const aminoAcidValues = foods
       .map(extractAminoAcids)
       .reduce(((totals, aminoAcids) => accumulate(aminoAcids, totals)), {})
-    
+
+    if (!hasAminoAcids(aminoAcidValues)) {
+      console.log('No Amino Acids')
+      return
+    }
+
     // build the data table array
     const headerRow = ['Amino Acid', 'Per 100g', { role: 'annotation' }, { role: 'style' }]
     let chartData = Object.keys(aminoAcidValues)
@@ -68,6 +67,11 @@ class Charts {
     chartData = [headerRow, ...chartData]
 
     const chart = new google.visualization.ColumnChart(document.getElementById('aminoAcidsChart'))
+    const options = {
+      title: "Amino Acids",
+      bar: { groupWidth: "95%" },
+      legend: { position: "none" },
+    }
 
     chart.draw(google.visualization.arrayToDataTable(chartData), options)
   }

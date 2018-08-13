@@ -1,3 +1,5 @@
+import { isEmpty, every, values } from 'lodash'
+
 
 // RDA in mg per 1kg of bodyweight
 const AMINO_ACIDS_DATA = [
@@ -26,7 +28,9 @@ export const getAminoPercentage = name => {
   return 'lol'
 }
 
-// add values from src to dest
+/*
+* Add values from src to dest
+*/
 export const accumulate = (src, dest) => {
   src.forEach(({ name, value }) => {
     if (!dest[name]) {
@@ -36,4 +40,17 @@ export const accumulate = (src, dest) => {
     }
   })
   return dest
+}
+
+/*
+* Returns true if the object contains entries and they are all > 0
+*/
+export const hasAminoAcids = valuesMap => {
+  if (isEmpty(valuesMap)) {
+    return false
+  }
+  if (every(values(valuesMap), i => i === 0)) {
+    return false
+  }
+  return true
 }

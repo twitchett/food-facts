@@ -1,5 +1,11 @@
 @import "./bare.css";
 
+/* Overrides */
+button,
+select {
+  margin: 0;
+}
+
 /* General Styles */
 
 .panel {
@@ -21,6 +27,13 @@ input.searchInput {
   padding: 4px;
   cursor: pointer;
   list-style-type: none;
+  display: flex;
+  align-items: center;
+}
+
+.itemTitle {
+  flex-grow: 2;
+  margin-right: 5px;
 }
 
 .resultItem:nth-child(even) {
@@ -31,19 +44,46 @@ input.searchInput {
   background: #dbe1e7
 }
 
-.resultItem > div {
+/*.resultItem > div {
   display: inline-block;
-  width: 80%;
 }
-
+*/
 /* Selected Foods */
 
-.foodItem > div {
+.foodItem {
+  padding: 4px;
+  cursor: pointer;
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+}
+
+.foodItem .itemTitle {
   height: 30px;
   padding-right: 15px;
   display: inline-block;
   width: 70%;
 }
+
+.measuresDropdown {
+  width: 200px;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+#foodsList .qtyInput {
+  margin: 0 5px 0;
+  width: 4rem;
+  height: 4rem;
+  padding: 1rem;
+  border: 1px solid hsl(200, 10%, 90%);
+}
+
+#foodsList .qtyInput:focus {
+  border-color: #679;
+}
+
+/* Charts */
 
 #macrosChart {
   width: 90%;
