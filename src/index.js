@@ -90,6 +90,7 @@ const view = (state, actions) => {
             { selectedFoods.map(food => renderFoodItem(food, removeFood)) }
           </ul>
           <div id="macrosChart" />
+          <div id="aminoAcidsChart" />
         </div>
       </div>
     </grid>
