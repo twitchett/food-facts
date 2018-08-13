@@ -1,5 +1,7 @@
 @import "./bare.css";
 
+/* General Styles */
+
 .panel {
   padding: 10px 10px 20px 10px;
 }
@@ -8,15 +10,35 @@ input.searchInput {
   width: 80%;
 }
 
-.resultsList li {
-  cursor: pointer;
+/* Results List */
+
+.resultsList {
+  margin-left: 0;
+  padding-left: 0;
 }
 
-.foodsList li {
+.resultItem {
+  padding: 4px;
+  cursor: pointer;
   list-style-type: none;
 }
 
-.foodsList .foodItem {
+.resultItem:nth-child(even) {
+  background: #f9fbfb
+}
+
+.resultItem:hover {
+  background: #dbe1e7
+}
+
+.resultItem > div {
+  display: inline-block;
+  width: 80%;
+}
+
+/* Selected Foods */
+
+.foodItem > div {
   height: 30px;
   padding-right: 15px;
   display: inline-block;

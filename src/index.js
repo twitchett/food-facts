@@ -79,12 +79,7 @@ const view = (state, actions) => {
         <div class='panel'>
           <h2>Results:</h2>
           <ul class="resultsList">
-          { searchResults && searchResults.list.item.map(i => 
-            <li onclick={() => {
-                selectFood(i.ndbno)
-              }}>{i.name} [{i.group}]
-            </li>
-          )}
+          { searchResults && searchResults.list.item.map(i => renderResultItem(i, selectFood)) }
           </ul>
         </div>
       </div>
@@ -92,7 +87,7 @@ const view = (state, actions) => {
         <div class='panel'>
           <h2>Selected:</h2>
           <ul class="foodsList">
-            { selectedFoods.map(food => foodItem(food, removeFood)) }
+            { selectedFoods.map(food => renderFoodItem(food, removeFood)) }
           </ul>
           <div id="macrosChart" />
         </div>
@@ -101,9 +96,15 @@ const view = (state, actions) => {
   )
 }
 
-const foodItem = (food, removeFood) => (
-  <li>
-    <div class="foodItem">{food.desc.name}</div>
+const renderResultItem = (result, selectFood) => (
+  <li class="resultItem" onclick={() => selectFood(result.ndbno) }>
+    <div>{result.name}</div> <tag>{result.group}</tag>
+  </li>
+)
+
+const renderFoodItem = (food, removeFood) => (
+  <li class="foodItem">
+    <div>{food.desc.name}</div>
     <button onclick={() => removeFood(food)}>X</button>
   </li>
 )
