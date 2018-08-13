@@ -1,35 +1,11 @@
 import { mergeWith, pick } from 'lodash'
 import { EventBus } from './EventBus'
+import { AMINO_ACIDS, getAminoShorthand, getAminoPercentage, accumulate } from './utils/aminoAcidUtils'
 const google = window.google
 
 const stats = {
   bodyweight: 80  // in kg
 }
-
-// RDA in mg per 1kg of bodyweight
-const AMINO_ACIDS = [
-  { name: 'Isoleucine', rda: 19 },
-  { name: 'Leucine', rda: 43 },
-  { name: 'Lysine', rda: 38 },
-  { name: 'Methionine', rda: 19 },
-  { name: 'Phenylalanine', rda: 33 },
-  { name: 'Threonine', rda: 20 },
-  { name: 'Tryptophan', rda: 5 },
-  { name: 'Valine', rda: 24 },
-  { name: 'Histidine', rda: 14 }
-]
-
-// const AMINO_ACIDS = {
-//   Isoleucine: 
-//   Leucine:
-//   Lysine:
-//   Methionine:
-//   Phenylalanine:
-//   Threonine:
-//   Tryptophan:
-//   Valine:
-//   Histidine:
-// }
 
 class Charts {
 
@@ -60,50 +36,37 @@ class Charts {
   }
 
   drawAll (foods) {
-    this.drawAminoAcids(foods)
     this.drawMacros(foods)
+    this.drawAminoAcids(foods)
   }
 
   drawAminoAcids (foods) {
-    const headerRow = ['Amino Acid', 'Per 100g']
-    const keys = AMINO_ACIDS.map(i => i.name)
-
-    // add values from src to dest
-    const accumulate = (src, dest) => {
-      src.forEach(({ name, value }) => {
-        if (!dest[name]) {
-          dest[name] = value
-        } else {
-          dest[name] += value
-        }
-      })
-      return dest
+    const options = {
+      title: "Amino Acids",
+      bar: { groupWidth: "95%" },
+      legend: { position: "none" },
     }
 
-    // extract an array of amino acid nutrient objects from the food report
-    const extractAminoAcids = food => food.nutrients.filter(nutrient => keys.includes(nutrient.name))
+    // extracts an array of amino acid nutrient objects from the food report
+    const extractAminoAcids = food => food.nutrients.filter(nutrient => AMINO_ACIDS.includes(nutrient.name))
     
     const aminoAcidValues = foods
       .map(extractAminoAcids)
       .reduce(((totals, aminoAcids) => accumulate(aminoAcids, totals)), {})
-     
-    const chartData = Object.keys(aminoAcidValues)
-      .map(key => [key, aminoAcidValues[key]])
+    
+    // build the data table array
+    const headerRow = ['Amino Acid', 'Per 100g', { role: 'annotation' }, { role: 'style' }]
+    let chartData = Object.keys(aminoAcidValues)
+      .map(name => [
+          name,
+          aminoAcidValues[name],
+          getAminoShorthand(name),
+          'green'
+        ]
+      )
 
-    chartData.unshift(headerRow)
+    chartData = [headerRow, ...chartData]
 
-    console.log('chart data', chartData)
-  //   const data = google.visualization.arrayToDataTable([
-  //      ['Amino Acid', 'per 100g', { role: 'style' }, { role: 'annotation' } ],
-  //      ['Copper', 8.94, '#b87333', 'Cu' ],
-  //      ['Silver', 10.49, 'silver', 'Ag' ],
-  //      ['Gold', 19.30, 'gold', 'Au' ],
-  //      ['Platinum', 21.45, 'color: #e5e4e2', 'Pt' ]
-  //   ])
-  // }
-    const options = {
-      title: 'Amino Acids'
-    }
     const chart = new google.visualization.ColumnChart(document.getElementById('aminoAcidsChart'))
 
     chart.draw(google.visualization.arrayToDataTable(chartData), options)
