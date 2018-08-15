@@ -1,11 +1,12 @@
-
 import { EventBus } from './EventBus'
-import { AMINO_ACIDS, getAminoShorthand, getAminoPercentage, accumulate, hasAminoAcids } from './utils/aminoAcidUtils'
+import { AMINO_ACIDS, getAminoShorthand, getAminoPercentage, accumulate, containsAminoAcids } from './utils/aminoAcidUtils'
 const google = window.google
 
 const stats = {
   bodyweight: 80  // in kg
 }
+
+console.log('EventBus', EventBus)
 
 class Charts {
 
@@ -13,46 +14,35 @@ class Charts {
     this.storeEvent = this.storeEvent.bind(this)
     this.drawMacros = this.drawMacros.bind(this)
     this.drawAminoAcids = this.drawAminoAcids.bind(this)
-    this.drawAll = this.drawAll.bind(this)
+    this.events = []
 
-    EventBus.subscribe('foods_updated', this.storeEvent)
+    const unsubHandlers = []
+    unsubHandlers.push(EventBus.subscribe('amino_acids_changed', payload => this.storeEvent('amino_acids_changed', payload)))
+    unsubHandlers.push(EventBus.subscribe('macros_changed', payload => this.storeEvent('macros_changed', payload)))
 
     const intervalId = window.setInterval(() => {
       if (window.loaded) {
         window.clearInterval(intervalId)
-        EventBus.unsubscribe('foods_updated', this.storeEvent)
-        EventBus.subscribe('foods_updated', this.drawAll)
-        if (this.foods) {
-          this.drawAll(this.foods)
-          this.foods = undefined
+        unsubHandlers.forEach(unsubHandler => unsubHandler())
+        EventBus.subscribe('amino_acids_changed', this.drawAminoAcids)
+        EventBus.subscribe('macros_changed', this.drawMacros)
+        if (this.events) {
+          this.events.forEach(([name, payload]) => {
+            if (name === 'amino_acids_changed') this.drawAminoAcids(payload)
+            if (name === 'macros_changed') this.drawMacros(payload)
+          })
+          this.events = []
         }
       }
     }, 500)
     
   }
 
-  storeEvent (foods) {
-    this.foods = foods
+  storeEvent (name, e) {
+    this.events.push([name, e])
   }
 
-  drawAll (foods) {
-    this.drawMacros(foods)
-    this.drawAminoAcids(foods)
-  }
-
-  drawAminoAcids (foods) {
-    // extracts an array of amino acid nutrient objects from the food report
-    const extractAminoAcids = food => food.nutrients.filter(nutrient => AMINO_ACIDS.includes(nutrient.name))
-    
-    const aminoAcidValues = foods
-      .map(extractAminoAcids)
-      .reduce(((totals, aminoAcids) => accumulate(aminoAcids, totals)), {})
-
-    if (!hasAminoAcids(aminoAcidValues)) {
-      console.log('No Amino Acids')
-      return
-    }
-
+  drawAminoAcids (aminoAcidValues) {
     // build the data table array
     const headerRow = ['Amino Acid', 'Per 100g', { role: 'annotation' }, { role: 'style' }]
     let chartData = Object.keys(aminoAcidValues)
@@ -71,8 +61,10 @@ class Charts {
       title: "Amino Acids",
       bar: { groupWidth: "95%" },
       legend: { position: "none" },
+      height: 400
     }
 
+    console.log('drawing chart...')
     chart.draw(google.visualization.arrayToDataTable(chartData), options)
   }
  
@@ -102,4 +94,8 @@ class Charts {
   }
 }
 
-export { Charts }
+const initializeCharts = (actions) => {
+  return new Charts(actions)
+}
+
+export { initializeCharts }

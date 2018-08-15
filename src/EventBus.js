@@ -29,11 +29,14 @@ class EventBus {
   }
 
   subscribe(eventName, fn, once) {
+    log.info(`[${eventName}]: subscribe ${fn.name}`)
     this.listeners.create(eventName, fn);
 
     if (once) {
       this.unsubscribe(eventName, fn);
     }
+
+    return this.unsubscribe.bind(this, eventName, fn)
   }
 
   once(eventName, fn) {
@@ -41,10 +44,12 @@ class EventBus {
   }
 
   unsubscribe(eventName, fn) {
+    console.info(`[${eventName}]: unsubcribe ${fn.name}`)
     this.listeners.destroy(eventName, fn);
   }
 
   emit(eventName, ...args) {
+    console.info(`[${eventName}]: emit ${args}`)
     this.listeners.fire(eventName, ...args);
   }
 }

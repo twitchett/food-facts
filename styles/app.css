@@ -2,7 +2,8 @@
 
 /* Overrides */
 button,
-select {
+select,
+ul {
   margin: 0;
 }
 
@@ -12,16 +13,18 @@ select {
   padding: 10px 10px 20px 10px;
 }
 
-input.searchInput {
+#searchInput {
   width: 80%;
+  margin-right: 10px;
 }
 
-/* Results List */
-
-.resultsList {
+#foodsList,
+#resultsList {
   margin-left: 0;
   padding-left: 0;
 }
+
+/* Results List */
 
 .resultItem {
   padding: 4px;

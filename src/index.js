@@ -2,32 +2,37 @@ import { h, app } from 'hyperapp'
 import devtools from 'hyperapp-redux-devtools'
 import { getSearchResults, getFoodReport } from './api'
 import { EventBus } from './EventBus'
-import { Charts } from './Charts'
-
-const c = new Charts()
+import { initializeCharts } from './Charts'
+import { chartActions } from './chartActions'
+import { cloneDeep } from 'lodash'
 
 const state = {
+  initial: true,
   search: '',
   searchResults: null,
   selectedFoods: [],
   focusedFood: null,
-  error: null
+  error: null,
+  charts: {
+    aminoAcidValues: {},
+    showAminoAcidsChart: false
+  }
 }
 
 const parseFoodResponse = food => {
-  console.log('parsing food', food)
   if (food.nutrients && food.nutrients.length > 0) {
     food.measures = Object.values(food.nutrients[0].measures)
-    console.log('food.measures', food.measures)
+    food.selectedMeasure = food.measures[0]
+    food.quantity = 1
   } else {
     console.warn('No measures for food', food)
   }
-  console.log('parsed food', food)
   return food
 }
 
 const actions = {
   reduce: fn => s => fn(s),
+  setInitial: () => ({ initial: false }),
   setInput: value => ({ search: value }),
   getFoodSuggetions: value => async (state, actions) => {
     const { setSearchResults, setError } = actions
@@ -58,20 +63,34 @@ const actions = {
   },
   setSearchResults: searchResults => ({ searchResults }),
   addFood: value => (state, actions) => {
+    const { reduce, updateChartData } = actions
     const { selectedFoods } = actions.reduce(s => ({ selectedFoods: [...s.selectedFoods, value] }))
-    EventBus.emit('foods_updated', selectedFoods)
+    actions.charts.updateChartData(selectedFoods)
   },
   removeFood: value => (state, actions) => {
     const newSelectedFoods = state.selectedFoods.filter(food => food !== value)
     const { selectedFoods } = actions.reduce(s => ({ selectedFoods: newSelectedFoods }))
-    EventBus.emit('foods_updated', selectedFoods)
-  }
+    actions.charts.updateChartData(selectedFoods)
+  },
+  setQuantity: ({ food, quantity }) => (state, actions) => {
+    const newFood = cloneDeep(food)
+    newFood.quantity = quantity
+    const newSelectedFoods = state.selectedFoods.map(i => i == food ? newFood : i) // TODO FIX! way of uniquely identify items
+    const { selectedFoods } = actions.reduce(s => ({ selectedFoods: newSelectedFoods }))
+    actions.charts.updateChartData(selectedFoods)
+  },
+  charts: chartActions
 }
 
 const view = (state, actions) => {
-  const { search, searchResults, selectedFoods } = state
-  const { getFoodSuggetions, selectFood, setInput, removeFood } = actions
-  EventBus.emit('foods_updated', selectedFoods)
+  const { initial, search, searchResults, selectedFoods, charts: { showAminoAcidsChart } } = state
+  const { getFoodSuggetions, selectFood, setInput, removeFood, setQuantity, setInitial, charts } = actions
+
+  // find a better way of triggering initial chart draw
+  if (initial) {
+    // charts.updateChartData(selectedFoods)
+    // setInitial()
+  }
 
   const searchResultErrors = searchResults && searchResults.errors
   const hasSearchResults = searchResults && searchResults.list && searchResults.list && searchResults.list.item.length > 0
@@ -82,7 +101,7 @@ const view = (state, actions) => {
         <div class='panel'>
           <h2>Search:</h2>
           <label>Search query</label>
-          <input class="searchInput"
+          <input id="searchInput"
             type="text"
             oninput={e => {
               setInput(e.target.value)
@@ -98,10 +117,9 @@ const view = (state, actions) => {
         <div class='panel'>
           <h2>Results:</h2>
           { searchResultErrors && <div>{searchResultErrors}</div>}
-          <ul class="resultsList">
+          <ul id="resultsList">
           { hasSearchResults
-            && searchResults.list
-            && searchResults.list.item.map(i => renderResultItem(i, selectFood)) }
+            && searchResults.list.item.map(i => <ResultItem result={i} selectFood={selectFood} />) }
           </ul>
         </div>
       </div>
@@ -109,27 +127,33 @@ const view = (state, actions) => {
         <div class='panel'>
           <h2>Selected:</h2>
           <ul id="foodsList">
-            { selectedFoods.map(food => renderFoodItem(food, removeFood)) }
+            { selectedFoods.map(food => <FoodItem food={food} removeFood={removeFood} setQuantity={setQuantity} />) }
           </ul>
           <div id="macrosChart" />
-          <div id="aminoAcidsChart">No Amino Acids to show</div>
+          <div id="aminoAcidsChart" />
         </div>
       </div>
     </grid>
   )
 }
 
-const renderResultItem = (result, selectFood) => (
+const ResultItem = ({ result, selectFood }) => (
   <li class="resultItem" onclick={() => selectFood(result.ndbno) }>
     <div class="itemTitle">{result.name}</div>
     <tag>{result.group}</tag>
   </li>
 )
 
-const renderFoodItem = (food, removeFood) => (
+const FoodItem = ({ food, removeFood, setQuantity }) => (
   <li class="foodItem">
     <div class="itemTitle">{food.desc.name}</div>
-    <input class="qtyInput" placeholder="qty" />
+    <input class="qtyInput"
+      placeholder="qty"
+      value={food.quantity}
+      oninput={e => {
+        setQuantity({ food, quantity: e.target.value })
+      }}
+    />
     <select class="measuresDropdown">
       { food.measures && food.measures.map(measure => 
         <option>{measure.label} ({measure.eqv}{measure.eunit})</option>
@@ -140,4 +164,6 @@ const renderFoodItem = (food, removeFood) => (
 )
 
 
-devtools(app)(state, actions, view, document.getElementById('app'))
+const { resetAminoAcids } = devtools(app)(state, actions, view, document.getElementById('app'))
+
+initializeCharts({ resetAminoAcids })
