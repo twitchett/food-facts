@@ -1,3 +1,5 @@
+/* eslint-disable */ 
+
 const HOST = 'https://api.nal.usda.gov/ndb'
 const SEARCH_ENDPOINT = `${HOST}/search`
 const REPORT_ENDPOINT = `${HOST}/V2/reports`
@@ -8,15 +10,15 @@ const requestOpts = {
 }
 
 const searchParams = [
-  [ 'api_key', API_KEY ],
-  [ 'sort', 'r' ],                // sort by relevance
-  [ 'ds', 'Standard Reference'],  // don't search branded database
-  [ 'format', 'json' ]            // obvioulys
+  ['api_key', API_KEY],
+  ['sort', 'r'],                 // sort by relevance
+  ['ds', 'Standard Reference'],  // don't search branded database
+  ['format', 'json']             // obviously
 ]
 
 const reportParams = [
-  [ 'api_key', API_KEY ],
-  [ 'type', 'f' ]                 // full report
+  ['api_key', API_KEY],
+  ['type', 'f']                 // full report
 ]
 
 const buildParamString = params =>
