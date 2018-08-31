@@ -21,7 +21,8 @@
     "babel-polyfill": "^6.26.0",
     "hyperapp": "^1.2.8",
     "hyperapp-redux-devtools": "^1.1.6",
-    "lodash": "^4.17.10"
+    "lodash": "^4.17.10",
+    "loglevel": "^1.6.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

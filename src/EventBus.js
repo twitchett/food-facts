@@ -29,7 +29,7 @@ class EventBus {
   }
 
   subscribe(eventName, fn, once) {
-    log.info(`[${eventName}]: subscribe ${fn.name}`)
+    console.info(`[${eventName}]: subscribe ${fn.name}`)
     this.listeners.create(eventName, fn);
 
     if (once) {

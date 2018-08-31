@@ -43,6 +43,11 @@ class Charts {
   }
 
   drawAminoAcids (aminoAcidValues) {
+    console.log('drawing Amino Acids', aminoAcidValues)
+    if (!containsAminoAcids(aminoAcidValues)) {
+      console.log('no amino acirds, treuning')
+      return
+    }
     // build the data table array
     const headerRow = ['Amino Acid', 'Per 100g', { role: 'annotation' }, { role: 'style' }]
     let chartData = Object.keys(aminoAcidValues)

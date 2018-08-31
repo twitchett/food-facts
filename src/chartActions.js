@@ -1,4 +1,4 @@
-import { AMINO_ACIDS, getAminoShorthand, getAminoPercentage, getEmptyMap, accumulate, containsAminoAcids } from './utils/aminoAcidUtils'
+import { AMINO_ACIDS, getAminoShorthand, getAminoPercentage, getValuesMap, accumulate, containsAminoAcids } from './utils/aminoAcidUtils'
 import { EventBus } from './EventBus'
 
 export const chartActions = {
@@ -13,12 +13,9 @@ export const chartActions = {
     EventBus.emit('macros_changed', payload)
   },
   setAminoAcidData: payload => (state, actions) => {
-    // extracts an array of amino acid nutrient objects from the food report
-    const extractAminoAcids = food => food.nutrients.filter(nutrient => AMINO_ACIDS.includes(nutrient.name))
-    
-    const aminoAcidValues = payload
-      .map(extractAminoAcids)
-      .reduce(accumulate, {})
+    const aminoAcidValues = getValuesMap(payload)
+
+    console.log('getValuesMap', aminoAcidValues)
 
     return { aminoAcidValues }
   },

@@ -1,4 +1,4 @@
-import { isEmpty, every, values, keyBy } from 'lodash'
+import { isEmpty, every, values, keyBy, mergeWith } from 'lodash'
 
 // console.log('isEmpty', isEmpty)
 
@@ -15,9 +15,9 @@ const AMINO_ACIDS_DATA = [
   { name: 'Histidine', rda: 14, shortHand: 'His' }
 ]
 
-export const AMINO_ACIDS = AMINO_ACIDS_DATA.map(i => i.name)
+const createEmptyValuesMap = () => AMINO_ACIDS_DATA.reduce((map, { name }) => Object.assign(map, { [name]: 0 }), {})
 
-// export const getEmptyMap = AMINO_ACIDS_DATA.reduce((map, { name }) => ({ ...map, [name]: 0 }), {});
+export const AMINO_ACIDS = AMINO_ACIDS_DATA.map(i => i.name)
 
 export const getAminoShorthand = name => {
   const aminoAcid = AMINO_ACIDS_DATA.find(i => i.name === name)
@@ -56,4 +56,35 @@ export const containsAminoAcids = valuesMap => {
     return false
   }
   return true
+}
+
+export const getValuesMap = foods => {
+    const food = foods[0]
+    const { selectedMeasure, quantity, nutrients } = food
+    const foodMass = quantity * selectedMeasure.eqv
+    console.log(`foodMass: ${quantity} * ${selectedMeasure.eqv} = ${foodMass}`)
+
+    return AMINO_ACIDS
+      // create array of { name, value } pairs for each amino acid
+      .map(aminoAcid => {
+        const nutrient = nutrients.find(item => item.name === aminoAcid)
+        let amount
+        if (!nutrient) {
+          amount = 0
+        } else {
+          amount = (() => getPercentage(nutrient, foodMass))()
+        }  
+        console.log('found food nutrietn: ', nutrient.name, nutrient)
+        return { aminoAcid, amount }
+      })
+      // reduce array of objects to single object
+      .reduce((map, { aminoAcid, amount }) => Object.assign(map, { [aminoAcid]: amount }), {})
+}
+
+const getPercentage = (nutrient, foodMass) => {
+  console.log('calculating amount: ', nutrient.name)
+  const { name, value: valuePer100g } = nutrient
+  const { rda } = AMINO_ACIDS_DATA.find(item => item.name === name)
+  const amount = valuePer100g * (foodMass/100)
+  return (amount/rda) * 100
 }
