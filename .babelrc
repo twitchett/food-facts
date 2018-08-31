@@ -1,16 +1,12 @@
 {
-  "plugins": [
-    ["transform-react-jsx", { "pragma": "h" }],
-    "dynamic-import-webpack"
-  ],
   "presets": [
-    ["env", { "modules": false }]
+    ["env", {
+      "modules": false,
+      "targets": {
+        "browsers": ["> 1%", "last 2 versions", "not ie <= 8"]
+      }
+    }],
+    "stage-2"
   ],
-  "env": {
-    "test": {
-      "presets": [
-        ["env", "es2015"]
-      ]
-    }
-  }
+  "plugins": ["transform-vue-jsx", "transform-runtime"]
 }
