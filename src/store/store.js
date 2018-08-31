@@ -1,19 +1,18 @@
-
-import Vue from 'vue'
-import Vuex from 'vuex'
 import { getSearchResults, getFoodReport } from '../api'
 import { cloneDeep } from 'lodash'
 
-Vue.use(Vuex)
-
-const store = new Vuex.Store({
+const storeConfig = {
   state: {
     searchResults: null,
+    searchResultsError: null,
     selectedFoods: [],
     charts: {
       aminoAcidValues: {},
       showAminoAcidsChart: false
     }
+  },
+  getters: {
+    hasSearchResults: state => !!state.searchResults
   },
   mutations: {
     setSearchResults (state, payload) {
@@ -66,7 +65,7 @@ const store = new Vuex.Store({
       commit('updateSelectedFoods', newSelectedFoods)
     }
   }
-})
+}
 
 const parseFoodResponse = food => {
   if (food.nutrients && food.nutrients.length > 0) {
@@ -79,4 +78,4 @@ const parseFoodResponse = food => {
   return food
 }
 
-export default store
+export default storeConfig

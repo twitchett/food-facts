@@ -6,13 +6,14 @@
         <label>Search query</label>
         <input id="searchInput"
           type="text"
-          v-model="search"
+          v-model="searchText"
+          v-on:keyup.enter="submit"
         />
-        <button v-click="getFoodSuggestions">Search</button>
+        <button @click="submit">Search</button>
       </div>
       <div class='panel'>
         <h2>Results:</h2>
-        <div v-if="searchResultErrors">{{ searchResultErrors }}</div>
+        <div v-if="searchResultsError">{{ searchResultsError }}</div>
         <ul v-if="hasSearchResults" id="resultsList">
           <li v-for="result in searchResults" :key="result.ndbno">
             <!-- <ResultItem v-bind="result" /> -->
@@ -39,7 +40,7 @@
 
 <script>
 // import HelloWorld from './components/HelloWorld'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import FoodItem from './components/FoodItem'
 import SearchResultItem from './components/SearchResultItem'
 
@@ -49,10 +50,32 @@ export default {
     FoodItem,
     SearchResultItem
   },
+  data: function () {
+    return {
+      searchText: ''
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'hasSearchResults'
+    ]),
+    searchResults () {
+      return this.$store.state.searchResults
+    },
+    searchResultsError () {
+      return this.$store.state.searchResultsError
+    },
+    foodItems () {
+      return this.$store.state.selectedFoods
+    }
+  },
   methods: {
     ...mapActions([
       'getFoodSuggestions'
-    ])
+    ]),
+    submit () {
+      this.getFoodSuggestions(this.searchText)
+    }
   }
 }
 </script>
