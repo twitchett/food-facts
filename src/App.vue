@@ -27,11 +27,11 @@
     </div>
   </grid>
 </template>
-
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import FoodsList from './components/FoodsList'
 import SearchResultList from './components/SearchResultList'
+import { drawCharts } from './charts/charts'
 
 export default {
   name: 'App',
@@ -39,10 +39,23 @@ export default {
     FoodsList,
     SearchResultList
   },
-  data: function () {
+  data () {
     return {
       searchText: ''
     }
+  },
+  created () {
+    this.$store.subscribe((mutation, state) => {
+      const updateDataTriggers = ['updateSelectedFoods', 'addFood']
+
+      if (updateDataTriggers.includes(mutation.type)) {
+        this.$store.dispatch('updateChartData', state.selectedFoods)
+      }
+
+      if (mutation.type === 'setChartData') {
+        drawCharts(state.charts)
+      }
+    })
   },
   computed: {
     ...mapGetters([

@@ -1,6 +1,6 @@
+import { AMINO_ACIDS_DATA } from '../constants'
 import { getSearchResults, getFoodReport } from '../api'
-import { charts } from './charts'
-import { cloneDeep } from 'lodash'
+import { isEmpty, every, values, cloneDeep } from 'lodash'
 
 const storeConfig = {
   state: {
@@ -11,13 +11,23 @@ const storeConfig = {
     searchResultsError: null,
     selectedFoods: [],
     charts: {
-      aminoAcidValues: {},
-      showAminoAcidsChart: false
+      aminoAcidsData: {},
+      macrosData: {}
     }
   },
   getters: {
+    showAminoAcidsChart: state => true,
     hasSearchResults: state => state.searchResults.total !== 0,
-    // searchResultsList: state => state.searchResults.list
+    hasAminoAcids: state => {
+      const { aminoAcidsData } = state.charts
+      if (isEmpty(aminoAcidsData)) {
+        return false
+      }
+      if (every(values(aminoAcidsData), i => i === 0)) {
+        return false
+      }
+      return true
+    }
   },
   mutations: {
     setSearchResults (state, payload) {
@@ -30,6 +40,21 @@ const storeConfig = {
       state.selectedFoods = [...state.selectedFoods, payload]
       // actions.charts.updateChartData(selectedFoods)
     },
+    // setAminoAcidChartData (state, payload) {
+    //   state.charts = {
+    //     ...state.charts,
+    //     aminoAcidsData: payload
+    //   }
+    // },
+    // setMacrosChartData (state, payload) {
+    //   state.charts = {
+    //     ...state.charts,
+    //     macrosData: payload
+    //   }
+    // }
+    setChartData (state, payload) {
+      state.charts = payload
+    }
   },
   actions: {
     async getFoodSuggestions ({ commit }, searchInput) {
@@ -71,8 +96,61 @@ const storeConfig = {
       const newSelectedFoods = state.selectedFoods.map(i => i === food ? newFood : i) // TODO FIX! way of uniquely identify items
       // const { selectedFoods } = actions.reduce(s => ({ selectedFoods: newSelectedFoods }))
       commit('updateSelectedFoods', newSelectedFoods)
+    },
+    updateChartData ({ commit }, foods) {
+      // Macros
+      const macrosData = {
+        carbs: getMacro(foods, 'Carbohydrate, by difference'),
+        fat: getMacro(foods, 'Total lipid (fat)'),
+        protein: getMacro(foods, 'Protein')
+      }
+
+      // Amino Acids
+      const food = foods[0]
+      const { selectedMeasure, quantity, nutrients } = food
+      const foodMass = quantity * selectedMeasure.eqv
+      console.log(`foodMass: ${quantity} * ${selectedMeasure.eqv} = ${foodMass}`)
+
+      const aminoAcidsData = AMINO_ACIDS_DATA
+        // create array of { name, value } pairs for each amino acid
+        .map(aminoAcid => {
+          const nutrient = nutrients.find(item => item.name === aminoAcid.name)
+          let amount
+          if (!nutrient) {
+            amount = 0
+          } else {
+            amount = (() => getPercentage(nutrient, aminoAcid, foodMass))()
+          }
+          console.log('found food nutrietn: ', nutrient.name, nutrient)
+          return {
+            aminoAcid: aminoAcid.name,
+            amount
+          }
+        })
+        // reduce array of objects to single object
+        .reduce((map, { aminoAcid, amount }) => Object.assign(map, { [aminoAcid]: amount }), {})
+
+      const chartData = {
+        macrosData,
+        aminoAcidsData
+      }
+
+      commit('setChartData', chartData)
     }
   }
+}
+
+const getMacro = (foods, name) => {
+  return foods.map(food => food.nutrients.find(n => n.name === name))
+    .reduce((total, nutrient) => nutrient.value + total, 0)
+}
+
+const getPercentage = (nutrient, aminoAcid, foodMass) => {
+  console.log('calculating amount: ', nutrient.name)
+  const { value: valuePer100g } = nutrient
+  const { rda } = aminoAcid
+  const amount = valuePer100g * (foodMass / 100)
+  return (amount / rda) * 100
 }
 
 const parseFoodResponse = food => {
