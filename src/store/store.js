@@ -3,7 +3,10 @@ import { cloneDeep } from 'lodash'
 
 const storeConfig = {
   state: {
-    searchResults: null,
+    searchResults: {
+      list: [],
+      total: 0
+    },
     searchResultsError: null,
     selectedFoods: [],
     charts: {
@@ -12,7 +15,8 @@ const storeConfig = {
     }
   },
   getters: {
-    hasSearchResults: state => !!state.searchResults
+    hasSearchResults: state => state.searchResults.total !== 0,
+    // searchResultsList: state => state.searchResults.list
   },
   mutations: {
     setSearchResults (state, payload) {
@@ -25,30 +29,29 @@ const storeConfig = {
       state.selectedFoods = [...state.selectedFoods, payload]
       // actions.charts.updateChartData(selectedFoods)
     },
-    removeFood (state, payload) {
-      const newSelectedFoods = state.selectedFoods.filter(food => food !== payload)
-      state.selectedFoods = newSelectedFoods
-      // actions.charts.updateChartData(selectedFoods)
-    },
   },
   actions: {
     async getFoodSuggestions ({ commit }, searchInput) {
       const response = await getSearchResults(searchInput)
       if (response.ok) {
         const body = await response.json()
-        commit('setSearchResults', body)
+        const searchResults = {
+          total: body.total,
+          list: body.list.item
+        }
+        commit('setSearchResults', searchResults)
       } else {
         // setError(response)
         window.alert(JSON.stringify(response))
       }
     },
-    async selectFood ({ commit }, food) {
-      const response = await getFoodReport(food)
+    async selectFood ({ commit }, ndbno) {
+      const response = await getFoodReport(ndbno)
       if (response.ok) {
         const body = await response.json()
         if (body && body.foods && body.foods.length) {
           if (body.foods.length > 1) {
-            console.warn('API returned more than 1 food for ndbno ' + food)
+            console.warn('API returned more than 1 food for ndbno ' + ndbno)
           }
           commit('addFood', parseFoodResponse(body.foods[0].food))
         }
@@ -56,6 +59,10 @@ const storeConfig = {
         // setError(response)
         window.alert(JSON.stringify(response))
       }
+    },
+    removeFood ({ commit, state }, ndbno) {
+      const selectedFoods = state.selectedFoods.filter(food => food.ndbno !== ndbno)
+      commit('updateSelectedFoods', selectedFoods)
     },
     setFoodQuantity ({ commit, state }, { food, quantity }) {
       const newFood = cloneDeep(food)
@@ -68,6 +75,7 @@ const storeConfig = {
 }
 
 const parseFoodResponse = food => {
+  console.log('parsing food', food)
   if (food.nutrients && food.nutrients.length > 0) {
     food.measures = Object.values(food.nutrients[0].measures)
     food.selectedMeasure = food.measures[0]

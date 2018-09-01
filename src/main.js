@@ -8,6 +8,10 @@ import storeConfig from './store/store'
 Vue.use(Vuex)
 Vue.config.productionTip = false
 Vue.config.devtools = true
+Vue.config.ignoredElements = [
+  'grid',
+  'tag'
+]
 
 const store = new Vuex.Store(storeConfig)
 
