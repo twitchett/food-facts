@@ -1,4 +1,5 @@
 import { getSearchResults, getFoodReport } from '../api'
+import { charts } from './charts'
 import { cloneDeep } from 'lodash'
 
 const storeConfig = {
