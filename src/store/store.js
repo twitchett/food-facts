@@ -38,20 +38,7 @@ const storeConfig = {
     },
     addFood (state, payload) {
       state.selectedFoods = [...state.selectedFoods, payload]
-      // actions.charts.updateChartData(selectedFoods)
     },
-    // setAminoAcidChartData (state, payload) {
-    //   state.charts = {
-    //     ...state.charts,
-    //     aminoAcidsData: payload
-    //   }
-    // },
-    // setMacrosChartData (state, payload) {
-    //   state.charts = {
-    //     ...state.charts,
-    //     macrosData: payload
-    //   }
-    // }
     setChartData (state, payload) {
       state.charts = payload
     }
@@ -63,7 +50,7 @@ const storeConfig = {
         const body = await response.json()
         const searchResults = {
           total: body.total,
-          list: body.list.item
+          list: (body.list && body.list.item) || 0
         }
         commit('setSearchResults', searchResults)
       } else {
@@ -86,15 +73,20 @@ const storeConfig = {
         window.alert(JSON.stringify(response))
       }
     },
-    removeFood ({ commit, state }, ndbno) {
-      const selectedFoods = state.selectedFoods.filter(food => food.ndbno !== ndbno)
+    removeFood ({ commit, state }, food) {
+      const selectedFoods = state.selectedFoods.filter(f => f !== food)
       commit('updateSelectedFoods', selectedFoods)
     },
     setFoodQuantity ({ commit, state }, { food, quantity }) {
       const newFood = cloneDeep(food)
       newFood.quantity = quantity
       const newSelectedFoods = state.selectedFoods.map(i => i === food ? newFood : i) // TODO FIX! way of uniquely identify items
-      // const { selectedFoods } = actions.reduce(s => ({ selectedFoods: newSelectedFoods }))
+      commit('updateSelectedFoods', newSelectedFoods)
+    },
+    updateFoodMeasure ({ commit, state }, { food, measure }) {
+      const newFood = cloneDeep(food)
+      newFood.selectedMeasure = measure
+      const newSelectedFoods = state.selectedFoods.map(i => i === food ? newFood : i) // TODO FIX! way of uniquely identify items
       commit('updateSelectedFoods', newSelectedFoods)
     },
     updateChartData ({ commit }, foods) {
@@ -106,29 +98,9 @@ const storeConfig = {
       }
 
       // Amino Acids
-      const food = foods[0]
-      const { selectedMeasure, quantity, nutrients } = food
-      const foodMass = quantity * selectedMeasure.eqv
-      console.log(`foodMass: ${quantity} * ${selectedMeasure.eqv} = ${foodMass}`)
-
-      const aminoAcidsData = AMINO_ACIDS_DATA
-        // create array of { name, value } pairs for each amino acid
-        .map(aminoAcid => {
-          const nutrient = nutrients.find(item => item.name === aminoAcid.name)
-          let amount
-          if (!nutrient) {
-            amount = 0
-          } else {
-            amount = (() => getPercentage(nutrient, aminoAcid, foodMass))()
-          }
-          console.log('found food nutrietn: ', nutrient.name, nutrient)
-          return {
-            aminoAcid: aminoAcid.name,
-            amount
-          }
-        })
-        // reduce array of objects to single object
-        .reduce((map, { aminoAcid, amount }) => Object.assign(map, { [aminoAcid]: amount }), {})
+      const aminoAcidsData = foods
+        .map(getAminoAcidsForFood)
+        .reduce(accumulate, createEmptyValuesMap())
 
       const chartData = {
         macrosData,
@@ -138,6 +110,41 @@ const storeConfig = {
       commit('setChartData', chartData)
     }
   }
+}
+
+const createEmptyValuesMap = () => AMINO_ACIDS_DATA.reduce((map, { name }) => Object.assign(map, { [name]: 0 }), {})
+
+const accumulate = (dest, src) => {
+  Object
+    .entries(src)
+    .forEach(([key, value]) => {
+      dest[key] += value
+    })
+  return dest
+}
+
+const getAminoAcidsForFood = food => {
+  const { selectedMeasure, quantity, nutrients } = food
+  const foodMass = quantity * selectedMeasure.eqv
+  console.log(`foodMass: ${quantity} * ${selectedMeasure.eqv} = ${foodMass}`)
+
+  return AMINO_ACIDS_DATA
+    // create array of { name, value } pairs for each amino acid
+    .map(aminoAcid => {
+      const nutrient = nutrients.find(item => item.name === aminoAcid.name)
+      let amount
+      if (!nutrient) {
+        amount = 0
+      } else {
+        amount = (() => getPercentage(nutrient, aminoAcid, foodMass))()
+      }
+      return {
+        aminoAcid: aminoAcid.name,
+        amount
+      }
+    })
+    // reduce array of objects to single object
+    .reduce((map, { aminoAcid, amount }) => Object.assign(map, { [aminoAcid]: amount }), {})
 }
 
 const getMacro = (foods, name) => {

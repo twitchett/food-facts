@@ -21,12 +21,13 @@
       <div class='panel'>
         <h2>Selected:</h2>
         <FoodsList />
-        <div id="macrosChart" />
         <div id="aminoAcidsChart" />
+        <div id="macrosChart" />
       </div>
     </div>
   </grid>
 </template>
+
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import FoodsList from './components/FoodsList'
@@ -59,7 +60,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'hasSearchResults'
+      'hasSearchResults',
+      'hasAminoAcids'
     ]),
     searchResultsError () {
       return this.$store.state.searchResultsError

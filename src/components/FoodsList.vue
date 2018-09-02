@@ -1,9 +1,9 @@
 <template>
   <ul id="foodsList">
-    <li class="foodItem" v-for="food in foodItems" :key="food.ndbno">
+    <li class="foodItem" v-for="(food, idx) in foodItems" :key="food.ndbno">
       <div class="itemTitle">{{ food.desc.name }}</div>
       <input class="qtyInput" placeholder="qty" />
-      <select class="measuresDropdown">
+      <select class="measuresDropdown" @change="measureChanged($event, idx)">
         <option v-for="measure in food.measures" :key="measure.label">
           <span>{{ measure.label }} ({{ measure.eqv }}{{ measure.eunit }})</span>
         </option>
@@ -17,7 +17,6 @@
 export default {
   name: 'FoodsList',
   props: {
-    foodsList: Array
     // desc: {
     //   validator: val => val.name && val.ndbno
     // },
@@ -34,6 +33,12 @@ export default {
   methods: {
     removeFood (food) {
       return this.$store.dispatch('removeFood', food)
+    },
+    measureChanged (ev, foodIdx) {
+      const optionIdx = ev.target.selectedIndex
+      const food = this.foodItems[foodIdx]
+      const measure = food.measures[optionIdx]
+      this.$store.dispatch('updateFoodMeasure', { food, measure })
     }
   }
 }
