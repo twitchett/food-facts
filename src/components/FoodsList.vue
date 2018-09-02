@@ -8,7 +8,7 @@
           <span>{{ measure.label }} ({{ measure.eqv }}{{ measure.eunit }})</span>
         </option>
       </select>
-      <button @click="removeFood">X</button>
+      <button @click="removeFood(food)">X</button>
     </li>
   </ul>
 </template>
